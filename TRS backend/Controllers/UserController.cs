@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -24,7 +25,7 @@ namespace TRS_backend.Controllers
         // Look up the user in the database and check if the user exists
         // if the user exists: hash the password and compare it with the stored hash
         // If the password is correct: return a JWT token
-        [HttpGet("Login")]
+        [HttpPost("Login")]
         public async Task<ActionResult<string>> Login([FromBody] LoginUserCredentials _credentials)
         {
             // Look up the user in the database by email or username
@@ -39,21 +40,28 @@ namespace TRS_backend.Controllers
             // Hash the given password
             byte[] hashedPassword = Crypto.HashPassword(_credentials.Password, user.Salt);
 
+            Debug.WriteLine($"Hashed password: { BitConverter.ToString(hashedPassword) }");
+            Debug.WriteLine($"Stored password: { BitConverter.ToString(user.PasswordHash) }");
+
+            Debug.WriteLine($"Is equal: {hashedPassword.SequenceEqual(user.PasswordHash)}");
             // Check if the password is correct
-            if (hashedPassword == user.PasswordHash) {
+            if (hashedPassword.SequenceEqual(user.PasswordHash)) {
+                
                 // Generate and return a JWT token
                 JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-                byte[] key = Encoding.UTF8.GetBytes(_configuration["JWTSigningKey"]!);
+                byte[] key = Encoding.UTF8.GetBytes(_configuration["JWT:JWTSigningKey"]!);
 
                 SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
                         new Claim(ClaimTypes.Name, user.Username),
-                        new Claim(ClaimTypes.Role, user.Role.ToString())
+                        new Claim(ClaimTypes.Role, UserRole.Admin.ToString())
                     }),
                     Expires = DateTime.UtcNow.AddHours(1),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                    Issuer = _configuration["JWT:Issuer"],
+                    Audience = _configuration["JWT:Audience"]
                 };
 
                 return Ok(tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor)));

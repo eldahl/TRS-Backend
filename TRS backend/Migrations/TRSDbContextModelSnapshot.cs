@@ -54,6 +54,28 @@ namespace TRS_backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 5, 16, 0, 31, 23, 525, DateTimeKind.Local).AddTicks(1852),
+                            Email = "testAdmin@test.dk",
+                            PasswordHash = new byte[] { 132, 127, 146, 203, 232, 109, 168, 134, 95, 67, 76, 196, 80, 72, 249, 242, 248, 3, 2, 67, 173, 180, 13, 74, 95, 31, 117, 172, 196, 200, 86, 2 },
+                            Role = 0,
+                            Salt = new byte[] { 227, 9, 16, 1, 143, 59, 46, 90, 127, 226, 72, 61, 178, 219, 241, 179, 4, 47, 198, 132, 217, 132, 18, 97, 251, 195, 96, 207, 27, 150, 58, 202 },
+                            Username = "testAdmin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 5, 16, 0, 31, 23, 525, DateTimeKind.Local).AddTicks(1906),
+                            Email = "testUser@test.dk",
+                            PasswordHash = new byte[] { 254, 32, 60, 208, 50, 84, 131, 38, 59, 59, 98, 231, 90, 130, 11, 104, 235, 163, 209, 117, 14, 63, 250, 105, 243, 9, 0, 101, 242, 252, 92, 20 },
+                            Role = 1,
+                            Salt = new byte[] { 74, 156, 203, 196, 206, 6, 47, 163, 200, 212, 177, 245, 12, 138, 51, 21, 9, 101, 165, 37, 158, 222, 148, 43, 151, 217, 222, 94, 146, 65, 142, 232 },
+                            Username = "testUser"
+                        });
                 });
 #pragma warning restore 612, 618
         }

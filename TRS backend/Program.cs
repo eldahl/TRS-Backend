@@ -1,8 +1,21 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Diagnostics;
+using System.Net;
 using System.Text;
+using TRS_backend;
 using TRS_backend.DBModel;
+
+// Debug code to generate hashed password and salt
+/*
+byte[] salt = Crypto.GenerateRandomBytes(32);
+byte[] hashedPassword = Crypto.HashPassword("MySecretPassword123", salt);
+
+Debug.WriteLine($"Hashed password: {BitConverter.ToString(hashedPassword)}");
+Debug.WriteLine($"Salt: {BitConverter.ToString(salt)}");
+*/
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,18 +38,24 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(bearerOpt => {
+    
+    var jwtConfig = builder.Configuration.GetSection("JWT");
+    var issuers = jwtConfig.GetSection("Issuers").Get<string[]>();
+    var audiences = jwtConfig.GetSection("Audiences").Get<string[]>();
+    var signingKey = jwtConfig["SigningKey"];
+
     bearerOpt.TokenValidationParameters = new TokenValidationParameters
     {
         // Set proper values for JWT validation
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:JWTSigningKey"]!)),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "http://localhost:5000",
-        ValidAudience = "http://localhost:5000",
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidAudience = builder.Configuration["JWT:Audience"],
         // Make sure token expires exactly at token expiration time
         ClockSkew = TimeSpan.Zero,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSigningKey"]!))
     };
 });
 
