@@ -1,0 +1,6 @@
+@TRS_backend_HostAddress = http://localhost:5095
+
+GET {{TRS_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
