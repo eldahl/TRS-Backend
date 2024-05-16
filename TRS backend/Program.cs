@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Diagnostics;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using TRS_backend;
 using TRS_backend.DBModel;
 
 // Debug code to generate hashed password and salt
@@ -26,6 +24,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+/*
+// Set up HTTPS LetsEncrypt certificate
+builder.Host.ConfigureWebHostDefaults(options => {
+    options.ConfigureKestrel(serverOptions => {
+        serverOptions.Listen(IPAddress.Any, 7043);
+        serverOptions.ConfigureHttpsDefaults(httpsOptions =>
+        {
+            httpsOptions.ServerCertificate = new X509Certificate2("localhost.pfx", "password");
+        });
+    });
+});
+*/
 
 builder.Services.AddDbContext<TRSDbContext>(options => {
     options.UseMySQL(builder.Configuration.GetConnectionString("MySQLDB")!);
