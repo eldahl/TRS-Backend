@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TRS_backend.Models;
 
 namespace TRS_backend.DBModel
 {
@@ -11,7 +12,12 @@ namespace TRS_backend.DBModel
             _configuration = configuration;
         }
 
-        public DbSet<TblUser> Users { get; set; }
+        public DbSet<TblUsers> Users { get; set; }
+        public DbSet<TblOpenDays> OpenDays { get; set; }
+        public DbSet<TblTimeSlots> TimeSlots { get; set; }
+        public DbSet<TblTables> Tables { get; set; }
+        public DbSet<TblTableReservations> TableReservations { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -20,8 +26,8 @@ namespace TRS_backend.DBModel
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TblUser>().HasData(
-                new TblUser
+            modelBuilder.Entity<TblUsers>().HasData(
+                new TblUsers
                 {
                     Id = 1,
                     Email = "testAdmin@test.dk",
@@ -39,7 +45,7 @@ namespace TRS_backend.DBModel
                         0x12, 0x61, 0xFB, 0xC3, 0x60, 0xCF, 0x1B, 0x96, 0x3A, 0xCA
                     }
                 },
-                new TblUser
+                new TblUsers
                 {
                     Id = 2,
                     Email = "testUser@test.dk",

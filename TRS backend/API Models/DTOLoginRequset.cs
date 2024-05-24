@@ -2,7 +2,7 @@
 
 namespace TRS_backend
 {
-    public class LoginUserCredentials
+    public class DTOLoginRequset
     {
         public string? Username { get; set; }
         public string? Email { get; set; }

@@ -5,6 +5,8 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using TRS_backend.DBModel;
+using TRS_backend.Operational;
+using TRS_backend.Services;
 
 // Debug code to generate hashed password and salt
 /*
@@ -14,12 +16,13 @@ byte[] hashedPassword = Crypto.HashPassword("MySecretPassword123", salt);
 Debug.WriteLine($"Hashed password: {BitConverter.ToString(hashedPassword)}");
 Debug.WriteLine($"Salt: {BitConverter.ToString(salt)}");
 */
+TimeSlotService timeSlotService = new TimeSlotService();
+timeSlotService.GenerateTimeSlots(DateOnly.FromDateTime(DateTime.Today), new TimeOnly(16, 00), new TimeOnly(21, 00), TimeSpan.FromMinutes(120), 2, new TimeOnly(00, 15));
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -37,11 +40,15 @@ builder.Host.ConfigureWebHostDefaults(options => {
 });
 */
 
+// Settings file context for saving settings and loading between restarts
+builder.Services.AddSingleton<SettingsFileContext>();
+
+// Database context
 builder.Services.AddDbContext<TRSDbContext>(options => {
     options.UseMySQL(builder.Configuration.GetConnectionString("MySQLDB")!);
 });
 
-
+// JWT authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,6 +76,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Build configuration into web application
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -78,10 +86,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// HTTP is insecure 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

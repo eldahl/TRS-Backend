@@ -1,14 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TRS_backend.Models;
 
 namespace TRS_backend.DBModel
 {
-    public enum UserRole
-    {
-        Admin,
-        User
-    }
-
-    public class TblUser
+    public class TblUsers
     {
         [Key]
         [Required]
@@ -16,22 +11,22 @@ namespace TRS_backend.DBModel
 
         [Required]
         [MaxLength(255)]
-        public string Email { get; set; }
+        public string Email { get; set; } = "";
 
         [Required]
         [MaxLength(255)]
-        public string Username { get; set; }
+        public string Username { get; set; } = "";
 
         [Required]
         public UserRole Role { get; set; }
 
         [Required]
         [MaxLength(1024)]
-        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordHash { get; set; } = new byte[0];
 
         [Required]
         [MaxLength(1024)]
-        public byte[] Salt { get; set; }
+        public byte[] Salt { get; set; } = new byte[0];
 
         [Required]
         public DateTime CreatedAt { get; set; }
