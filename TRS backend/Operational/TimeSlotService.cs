@@ -11,7 +11,7 @@ namespace TRS_backend.Services
         
         public TimeSlotService()
         {
-
+            
         }
 
         public List<TblTimeSlots> GenerateTimeSlots(DateOnly date, TimeOnly startTime, TimeOnly endTime, TimeSpan diningDuration, int servingsPerTimeSlot, TimeOnly servingInterval)

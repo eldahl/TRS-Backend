@@ -16,8 +16,8 @@ byte[] hashedPassword = Crypto.HashPassword("MySecretPassword123", salt);
 Debug.WriteLine($"Hashed password: {BitConverter.ToString(hashedPassword)}");
 Debug.WriteLine($"Salt: {BitConverter.ToString(salt)}");
 */
-TimeSlotService timeSlotService = new TimeSlotService();
-timeSlotService.GenerateTimeSlots(DateOnly.FromDateTime(DateTime.Today), new TimeOnly(16, 00), new TimeOnly(21, 00), TimeSpan.FromMinutes(120), 2, new TimeOnly(00, 15));
+//TimeSlotService timeSlotService = new TimeSlotService();
+//timeSlotService.GenerateTimeSlots(DateOnly.FromDateTime(DateTime.Today), new TimeOnly(16, 00), new TimeOnly(21, 00), TimeSpan.FromMinutes(120), 2, new TimeOnly(00, 15));
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +42,7 @@ builder.Host.ConfigureWebHostDefaults(options => {
 
 // Settings file context for saving settings and loading between restarts
 builder.Services.AddSingleton<SettingsFileContext>();
+builder.Services.AddSingleton<TimeSlotService>();
 
 // Database context
 builder.Services.AddDbContext<TRSDbContext>(options => {
