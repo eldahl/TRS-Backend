@@ -1,0 +1,1 @@
+{"TimeSlotDuration":"02:00:00","OpenTime":"16:00:00","CloseTime":"21:00:00","ServingInterval":"00:15:00","ReservationsPerTimeSlot":2,"ReservationNotificationEmails":[{"Email":"mad@illerslot.dk"}],"ReservationNotificationPhoneNumbers":[{"CountryCode":45,"PhoneNumber":"12345678"}],"CustomerReminderSMSTemplate":"Husk reservation!","CustomerReminderEmailTemplate":"Husk reservation!"}

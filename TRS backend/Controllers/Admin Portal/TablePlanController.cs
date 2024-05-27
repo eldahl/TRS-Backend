@@ -17,15 +17,30 @@ namespace TRS_backend.Controllers
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Get table plan for a specific date, so it can be displayed in the admin portal
+        /// </summary>
+        /// <param name="requestBody">Request parameters</param>
+        /// <returns>List of table reservations</returns>
         [Authorize]
         [HttpPost("GetTablePlanForDate")]
         public ActionResult<DTOTablePlanForDateResponse> GetTablePlanForDate([FromBody] DTOTablePlanForDateRequest requestBody)
         {
-            var reservationsList = _dbContext.TableReservations.Select(tr => tr).Where(tr => tr.Day.Day == requestBody.Date).ToList();
+            var reservationsList = _dbContext.TableReservations.Select(tr => tr).Where(tr => tr.OpenDay.Date == requestBody.Date).ToList();
 
             return new DTOTablePlanForDateResponse() {
                 Reservations = reservationsList
             };
+        }
+
+        /// <summary>
+        /// Get all tables in the reservation system
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetTables")]
+        public async Task<ActionResult<List<TblTables>>> GetTables()
+        {
+            return await _dbContext.Tables.ToListAsync();
         }
     }
 }

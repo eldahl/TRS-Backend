@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TRS_backend.Models;
 
 namespace TRS_backend.DBModel
@@ -22,10 +23,46 @@ namespace TRS_backend.DBModel
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL(_configuration["ConnectionStrings:MySQLDB"]!);
+            optionsBuilder.EnableSensitiveDataLogging();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Do conversion between TimeOnly and TimeSpan, because EF can't handle things for us.
+            var timeOnlyToTimeSpanConverter = new ValueConverter<TimeOnly, TimeSpan>(
+                timeOnlyValue => timeOnlyValue.ToTimeSpan(),
+                timeSpanValue => TimeOnly.FromTimeSpan(timeSpanValue)
+            );
+            var dateOnlyToDateTimeConverter = new ValueConverter<DateOnly, DateTime>(
+                dateOnlyValue => new DateTime(dateOnlyValue, new TimeOnly(0)),
+                dateTimeValue => DateOnly.FromDateTime(dateTimeValue)
+            );
+            // Tbl Time Slots
+            modelBuilder.Entity<TblTimeSlots>().Property(ts => ts.StartTime).HasConversion(timeOnlyToTimeSpanConverter);
+            modelBuilder.Entity<TblTimeSlots>().Property(ts => ts.Date).HasConversion(dateOnlyToDateTimeConverter);
+            
+            // Tbl Open Days
+            modelBuilder.Entity<TblOpenDays>().Property(od => od.OpenTime).HasConversion(timeOnlyToTimeSpanConverter);
+            modelBuilder.Entity<TblOpenDays>().Property(od => od.CloseTime).HasConversion(timeOnlyToTimeSpanConverter);
+            modelBuilder.Entity<TblOpenDays>().Property(od => od.Date).HasConversion(dateOnlyToDateTimeConverter);
+            
+            // Foreign keys so that we can seed data properly below
+            modelBuilder.Entity<TblTableReservations>()
+                .HasOne(tr => tr.Table)
+                .WithMany()
+                .HasForeignKey(tr => tr.TableId);
+            modelBuilder.Entity<TblTableReservations>()
+                .HasOne(tr => tr.OpenDay)
+                .WithMany()
+                .HasForeignKey(tr => tr.OpenDayId);
+            modelBuilder.Entity<TblTableReservations>()
+                .HasOne(tr => tr.TimeSlot)
+                .WithMany()
+                .HasForeignKey(tr => tr.TimeSlotId);
+
+            ///////////////
+            // Data seed //
+            ///////////////
             modelBuilder.Entity<TblUsers>().HasData(
                 new TblUsers
                 {
@@ -62,6 +99,104 @@ namespace TRS_backend.DBModel
                         0xF5, 0x0C, 0x8A, 0x33, 0x15, 0x09, 0x65, 0xA5, 0x25, 0x9E, 0xDE,
                         0x94, 0x2B, 0x97, 0xD9, 0xDE, 0x5E, 0x92, 0x41, 0x8E, 0xE8
                     }
+                }
+            );
+
+            modelBuilder.Entity<TblTables>().HasData(
+                new TblTables
+                {
+                    Id = 1,
+                    TableName = "Table 10",
+                    Seats = 8
+                },
+                new TblTables
+                {
+                    Id = 2,
+                    TableName = "Table 11",
+                    Seats = 6
+                },
+                new TblTables
+                {
+                    Id = 3,
+                    TableName = "Table 12",
+                    Seats = 6
+                },
+                new TblTables
+                {
+                    Id = 4,
+                    TableName = "Table 13",
+                    Seats = 4
+                },
+                new TblTables
+                {
+                    Id = 5,
+                    TableName = "Table 17",
+                    Seats = 4
+                },
+                new TblTables
+                {
+                    Id = 6,
+                    TableName = "Table 19",
+                    Seats = 4
+                },
+                new TblTables {
+                    Id = 7,
+                    TableName = "Table 101",
+                    Seats = 8
+                },
+                new TblTables
+                {
+                    Id = 8,
+                    TableName = "Table 110",
+                    Seats = 8
+                },
+                new TblTables
+                {
+                    Id = 9,
+                    TableName = "Table 103",
+                    Seats = 6
+                }
+            );
+
+            modelBuilder.Entity<TblOpenDays>().HasData(
+                new TblOpenDays
+                {
+                    Id = 1,
+                    Date = new DateOnly(2024, 5, 25),
+                    OpenTime = new TimeOnly(16, 0),
+                    CloseTime = new TimeOnly(21, 0)
+                },
+                new TblOpenDays
+                {
+                    Id = 2,
+                    Date = new DateOnly(2024, 5, 26),
+                    OpenTime = new TimeOnly(16, 0),
+                    CloseTime = new TimeOnly(21, 0)
+                }
+            );
+
+            modelBuilder.Entity<TblTimeSlots>().HasData(
+                new TblTimeSlots
+                {
+                    Id = 1,
+                    Date = new DateOnly(2024, 05, 25),
+                    StartTime = new TimeOnly(16, 0),
+                    Duration = new TimeSpan(2, 0, 0)
+                }
+            );
+
+            modelBuilder.Entity<TblTableReservations>().HasData(
+                new TblTableReservations
+                {
+                    Id = 1,
+                    OpenDayId = 1,
+                    TimeSlotId = 1,
+                    TableId = 1,
+                    FullName = "Customer user",
+                    Email = "customer@gmail.com",
+                    PhoneNumber = "12345678",
+                    SendReminders = true,
+                    Comment = "This is a comment"
                 }
             );
         }

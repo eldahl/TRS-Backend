@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TRS_backend.DBModel;
 
@@ -10,9 +11,11 @@ using TRS_backend.DBModel;
 namespace TRS_backend.Migrations
 {
     [DbContext(typeof(TRSDbContext))]
-    partial class TRSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240527033712_DatabaseSetup")]
+    partial class DatabaseSetup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

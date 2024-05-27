@@ -4,7 +4,7 @@ using System.Security.Policy;
 
 namespace TRS_backend.DBModel
 {
-    [Index(nameof(Day), IsUnique = true)]
+    [Index(nameof(Date), IsUnique = true)]
     public class TblOpenDays
     {
         [Key]
@@ -13,7 +13,7 @@ namespace TRS_backend.DBModel
 
         // Date is unique as to not have multiple entries for the same day, see index class attribute
         [Required]
-        public DateOnly Day { get; set; }
+        public DateOnly Date { get; set; }
         
         [Required]
         public TimeOnly OpenTime { get; set; }

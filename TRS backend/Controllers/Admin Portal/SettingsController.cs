@@ -1,54 +1,60 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Configuration;
+using TRS_backend.API_Models;
 using TRS_backend.DBModel;
 using TRS_backend.Operational;
 
 namespace TRS_backend.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class SettingsController : Controller
     {
+        private readonly TRSDbContext _dbContext;
         private readonly SettingsFileContext _settingsContext;
 
-        public SettingsController(SettingsFileContext settingsContext)
+        public SettingsController(TRSDbContext dbContext, SettingsFileContext settingsContext)
         {
+            _dbContext = dbContext;
             _settingsContext = settingsContext;
         }
 
+        /// <summary>
+        /// Get all settings
+        /// </summary>
+        /// <returns>Settings object encapsulated in Response object</returns>
+        [Authorize]
         [HttpPost("GetSettings")]
-        public ActionResult<DTOGetSettingsResponse> GetSettings()
+        public ActionResult<DTOSettingsResponse> GetSettings()
         {
-            // Get settings from settings file
-            var settings = _settingsContext.GetAllSettings();
-
-            // Return settings as list of key-value pairs
-            return new DTOGetSettingsResponse()
+            return new DTOSettingsResponse()
             {
-                Settings = settings.ToList()
+                Settings = _settingsContext.Settings,
+                Tables = _dbContext.Tables.ToArray()
             };
         }
 
+        /// <summary>
+        /// Set settings
+        /// </summary>
+        /// <param name="requestBody">Settings to set</param>
+        /// <returns>Newly set settings</returns>
+        [Authorize]
         [HttpPost("SetSettings")]
-        public ActionResult<DTOSetSettingsResponse> SetSettings([FromBody] DTOSetSettingsRequest requestBody)
+        public async Task<ActionResult<DTOSettingsResponse>> SetSettings([FromBody] DTOSettingsRequest requestBody)
         {
-            // Validate the request and sanitize the input
+            // Set tables settings in the database
+            _dbContext.Tables.UpdateRange(requestBody.Tables);
+            await _dbContext.SaveChangesAsync();
 
-            // Get settings from database
-            var settings = _settingsContext.GetAllSettings();
-
-            // Apply the new settings to database
-            /*
-            foreach (var setting in requestBody.Settings)
+            // Set the settings in the settings file
+            _settingsContext.Settings = requestBody.Settings;
+            return new DTOSettingsResponse()
             {
-                settings[setting.Key] = setting.Value;
-            }
-            */
-
-            // Save new settings
-
-            // Return the new settings
-            return new DTOSetSettingsResponse()
-            {
-                Settings = null//settings
+                Settings = _settingsContext.Settings,
+                Tables = _dbContext.Tables.ToArray()
             };
         }
     }

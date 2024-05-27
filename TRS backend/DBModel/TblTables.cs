@@ -9,7 +9,7 @@ namespace TRS_backend.DBModel
         public int Id { get; set; }
 
         [Required]
-        public string TableName { get; set; }
+        public string TableName { get; set; } = "";
 
         [Required]
         public int Seats { get; set; }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -25,9 +26,12 @@ namespace TRS_backend.Controllers
             _dbContext = context;
         }
 
-        // Look up the user in the database and check if the user exists
-        // if the user exists: hash the password and compare it with the stored hash
-        // If the password is correct: return a JWT token
+        /// <summary>
+        /// Login a user and return a JWT token
+        /// </summary>
+        /// <param name="requestBody">Request parameters</param>
+        /// <returns>JSON Web Token or error response</returns>
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<ActionResult<string>> Login([FromBody] DTOLoginRequset requestBody)
         {
@@ -35,13 +39,13 @@ namespace TRS_backend.Controllers
             if (requestBody.Username is null && requestBody.Email is null || requestBody.Password is null) {
                 return BadRequest("Failed to login");
             }
-            // Regex to only allow lower- and uppercase letters, numbers, and hyphens
+                // Regex to only allow lower- and uppercase letters, numbers, and hyphens
             Regex usernameRegex = new Regex("[^a-zA-Z0-9-]");
             if (requestBody.Username is not null && !usernameRegex.IsMatch(requestBody.Username))
             {
                 return BadRequest("Failed to login");
             }
-            // Use Mail.MailAddress to validate the email
+                // Use Mail.MailAddress to validate the email
             if (requestBody.Email is not null) {
                 var email = new System.Net.Mail.MailAddress(requestBody.Email);
                 if (email is null)
@@ -92,25 +96,37 @@ namespace TRS_backend.Controllers
             return BadRequest("Failed to login");
         }
 
+        /// <summary>
+        /// Registers a new user, given they provide a registration code
+        /// </summary>
+        /// <param name="requestBody">Request parameters</param>
+        /// <returns>Response message</returns>
+        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<ActionResult<string>> RegisterUser([FromBody] DTORegisterUserRequest requestBody)
         {
             // Validate the input
-            if (requestBody.Username is null || requestBody.Email is null || requestBody.Password is null)
+            if (requestBody.Username is null || requestBody.Email is null || requestBody.Password is null || requestBody.RegistrationCode is null)
             {
                 return BadRequest("Failed to register");
             }
-            // Regex to only allow lower- and uppercase letters, numbers, and hyphens
+                // Regex to only allow lower- and uppercase letters, numbers, and hyphens
             Regex usernameRegex = new Regex("[^a-zA-Z0-9-]");
             if (!usernameRegex.IsMatch(requestBody.Username)) {
                 return BadRequest("Failed to register");
             }
-            // Use Mail.MailAddress to validate the email
+                // Use Mail.MailAddress to validate the email
             var email = new System.Net.Mail.MailAddress(requestBody.Email);
             if (email is null) {
                 return BadRequest("Failed to register");
             }
             
+            // Check if the registration code is correct
+            if (requestBody.RegistrationCode != _configuration["RegistrationCode"])
+            {
+                return BadRequest("Failed to register");
+            }
+
             // Check if the user already exists
             bool userExists = await _dbContext.Users.AnyAsync(user => user.Username == requestBody.Username || user.Email == requestBody.Email);
             if (userExists) {

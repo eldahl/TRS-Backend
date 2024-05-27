@@ -7,10 +7,22 @@ namespace TRS_backend.DBModel
         [Key]
         [Required]
         public int Id { get; set; }
-        
+
+        [Required]
+        public int TableId { get; set; }
         [Required]
         public TblTables Table { get; set; }
-        
+
+        [Required]
+        public int OpenDayId { get; set; }
+        [Required]
+        public TblOpenDays OpenDay { get; set; }
+
+        [Required]
+        public int TimeSlotId { get; set; }
+        [Required]
+        public TblTimeSlots TimeSlot { get; set; }
+
         [Required]
         public string FullName { get; set; } = "";
         
@@ -19,18 +31,10 @@ namespace TRS_backend.DBModel
         
         [Required]
         public string PhoneNumber { get; set; } = "";
-        
-        [Required]
-        public TblOpenDays Day { get; set; } = new ();
-        
-        [Required]
-        public TblTimeSlots TimeSlot { get; set; } = new ();
-        
+
         [Required]
         public bool SendReminders { get; set; }
-        
+
         public string? Comment { get; set; }
-
-
     }
 }

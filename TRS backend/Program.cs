@@ -42,7 +42,7 @@ builder.Host.ConfigureWebHostDefaults(options => {
 
 // Settings file context for saving settings and loading between restarts
 builder.Services.AddSingleton<SettingsFileContext>();
-builder.Services.AddSingleton<TimeSlotService>();
+builder.Services.AddScoped<TimeSlotService>();
 
 // Database context
 builder.Services.AddDbContext<TRSDbContext>(options => {
