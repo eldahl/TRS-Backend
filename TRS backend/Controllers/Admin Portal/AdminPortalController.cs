@@ -16,11 +16,11 @@ namespace TRS_backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class AdminPortalController : ControllerBase
     {
         private readonly IConfiguration _configuration;
         private readonly TRSDbContext _dbContext;
-        public UserController(IConfiguration configuration, TRSDbContext context)
+        public AdminPortalController(IConfiguration configuration, TRSDbContext context)
         {
             _configuration = configuration;
             _dbContext = context;

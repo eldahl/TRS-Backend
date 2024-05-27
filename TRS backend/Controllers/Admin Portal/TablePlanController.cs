@@ -32,15 +32,5 @@ namespace TRS_backend.Controllers
                 Reservations = reservationsList
             };
         }
-
-        /// <summary>
-        /// Get all tables in the reservation system
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("GetTables")]
-        public async Task<ActionResult<List<TblTables>>> GetTables()
-        {
-            return await _dbContext.Tables.ToListAsync();
-        }
     }
 }
