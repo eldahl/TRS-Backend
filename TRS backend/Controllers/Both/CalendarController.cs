@@ -10,15 +10,32 @@ namespace TRS_backend.Controllers.Both
 {
     [ApiController]
     [Route("[controller]")]
-    public class AdminPortalCalendarController : Controller
+    public class CalendarController : Controller
     {
         private readonly TRSDbContext _dbContext;
         private readonly SettingsFileContext _settingsContext;
 
-        public AdminPortalCalendarController(TRSDbContext dbContext, SettingsFileContext settingsContext)
+        public CalendarController(TRSDbContext dbContext, SettingsFileContext settingsContext)
         {
             _dbContext = dbContext;
             _settingsContext = settingsContext;
+        }
+
+        /// <summary>
+        /// Get open days by month and year
+        /// </summary>
+        /// <param name="requestBody">Request parameters</param>
+        /// <returns>Open days in the given month & year</returns>
+        [AllowAnonymous]
+        [HttpPost("GetOpenDaysByMonthAndYear")]
+        public ActionResult<DTOOpenDaysByMonthAndYearResponse> GetOpenDaysByMonthAndYear([FromBody] DTOOpenDaysByMonthAndYearRequest requestBody)
+        {
+            var openDays = _dbContext.OpenDays.Select(od => od).Where(od => od.Date.Month == requestBody.Month && od.Date.Year == requestBody.Year).ToList();
+
+            return new DTOOpenDaysByMonthAndYearResponse()
+            {
+                OpenDays = openDays
+            };
         }
 
         /// <summary>
