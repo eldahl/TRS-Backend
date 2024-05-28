@@ -28,12 +28,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Set up HTTPS LetsEncrypt certificate for direct HTTPS access
+/*
 builder.WebHost.UseKestrel(serverOptions => {
     serverOptions.ConfigureHttpsDefaults(httpsOptions =>
     {
         httpsOptions.ServerCertificate = new X509Certificate2("/cert.pfx", builder.Configuration["CertificateKey"]);
     });
 });
+*/
 
 // Add HTTP traffic logging
 builder.Services.AddHttpLogging(options => {
