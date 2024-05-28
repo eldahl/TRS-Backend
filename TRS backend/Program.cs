@@ -27,18 +27,24 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-/*
-// Set up HTTPS LetsEncrypt certificate
+// Set up HTTPS LetsEncrypt certificate for direct HTTPS access
 builder.Host.ConfigureWebHostDefaults(options => {
     options.ConfigureKestrel(serverOptions => {
-        serverOptions.Listen(IPAddress.Any, 7043);
+        serverOptions.Listen(IPAddress.Any, 80);
         serverOptions.ConfigureHttpsDefaults(httpsOptions =>
         {
-            httpsOptions.ServerCertificate = new X509Certificate2("localhost.pfx", "password");
+            httpsOptions.ServerCertificate = new X509Certificate2("/cert.pfx", builder.Configuration["CertificateKey"]);
         });
     });
 });
-*/
+
+// Add HTTP traffic logging
+builder.Services.AddHttpLogging(options => {
+    options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+    options.MediaTypeOptions.AddText("application/javascript");
+    options.RequestBodyLogLimit = 4096;
+    options.ResponseBodyLogLimit = 4096;
+});
 
 // Settings file context for saving settings and loading between restarts
 builder.Services.AddSingleton<SettingsFileContext>();
@@ -86,6 +92,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Add traffic logging
+app.UseHttpLogging();
 
 // HTTP is insecure 
 app.UseHttpsRedirection();
