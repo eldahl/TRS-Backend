@@ -84,8 +84,8 @@ namespace TRS_backend.Controllers.Both
                 return BadRequest("TableId and TimeSlotId must be provided");
 
             // Regex for FullName: Allow all unicode letters, spaces, and punctuation
-            Regex fullNameRegex = new Regex(@"^\\pL+[\\pL\\pZ\\pP]{0,}$");
-            if (requestBody.FullName is not null && !fullNameRegex.IsMatch(requestBody.FullName))
+            Regex fullNameRegex = new Regex(@"\\pL+[\\pL\\pZ\\pP]{0,}$?");
+            if (requestBody.FullName is not null && fullNameRegex.IsMatch(requestBody.FullName))
             {
                 return BadRequest("Full Name field is not recognized as a name");
             }
@@ -99,8 +99,8 @@ namespace TRS_backend.Controllers.Both
                 }
             }
             // Phone number validator: Only allow 8 digit phone numbers for now
-            Regex phoneRegex = new Regex(@"^\\d{8,}$");
-            if (requestBody.PhoneNumber is not null && !phoneRegex.IsMatch(requestBody.PhoneNumber))
+            Regex phoneRegex = new Regex(@"\\d{8,}$");
+            if (requestBody.PhoneNumber is not null && phoneRegex.IsMatch(requestBody.PhoneNumber))
             {
                 return BadRequest("Phone number field is not recognized as an 8 digit phone number");
             }

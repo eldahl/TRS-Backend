@@ -1,0 +1,726 @@
+{
+	"info": {
+		"_postman_id": "30752ac3-3362-4183-a6dc-8d0b1d1660cf",
+		"name": "API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35397435"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"User is succesfully registered\", () => {\r",
+							"    var responseText = pm.response.text();\r",
+							"    pm.expect(responseText).to.be.equal(\"Successfully registered user.\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": {{email}},\r\n  \"username\": {{username}},\r\n  \"password\": {{password}},\r\n  \"registrationCode\": {{registrationCode}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5095/AdminPortal/Register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"AdminPortal",
+						"Register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"JWT Token is received\", () => {\r",
+							"    var respnseText = pm.response.text();\r",
+							"\r",
+							"    pm.expect(respnseText).to.include(\"ey\");\r",
+							"    pm.collectionVariables.set(\"jwt_token\", respnseText);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": {{username}},\r\n  \"email\": {{email}},\r\n  \"password\": {{password}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5095/AdminPortal/Login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"AdminPortal",
+						"Login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetRole",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Role is 'Admin'\", function () {\r",
+							"    var responseText = pm.response.text();\r",
+							"    pm.expect(responseText).to.eql('Admin');\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5095/Debug/Role",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"Debug",
+						"Role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SetOpenDayForDate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": \"2024-01-01\",\r\n    \"isOpen\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5095/Calendar/SetOpenDayForDate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"Calendar",
+						"SetOpenDayForDate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetOpenDaysByMonthAndYear",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returns single open-day on Jan. 1st 2024\", function () {\r",
+							"    var expectedResponse = {\r",
+							"        \"openDays\": [\r",
+							"            {\r",
+							"                \"id\": 3,\r",
+							"                \"date\": \"2024-01-01\",\r",
+							"                \"openTime\": \"16:00:00\",\r",
+							"                \"closeTime\": \"21:00:00\"\r",
+							"            }\r",
+							"        ]\r",
+							"    };\r",
+							"    \r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql(expectedResponse);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"month\": 1,\r\n    \"year\": 2024\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5095/Calendar/GetOpenDaysByMonthAndYear",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"Calendar",
+						"GetOpenDaysByMonthAndYear"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTimeSlotsForDate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response with all open time slots\", function () {\r",
+							"     var responseJSON = pm.response.json();\r",
+							"     pm.expect(responseJSON).to.be.an('array');\r",
+							"     responseJSON.forEach((timeSlot) => {\r",
+							"            pm.expect(timeSlot).to.have.property('id');\r",
+							"            pm.expect(timeSlot).to.have.property('date');\r",
+							"            pm.expect(timeSlot).to.have.property('startTime');\r",
+							"            pm.expect(timeSlot).to.have.property('duration');\r",
+							"     });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": \"2024-01-01\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5095/Reservation/GetTimeSlotsForDate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"Reservation",
+						"GetTimeSlotsForDate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTables",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is all available tables\", function () {\r",
+							"     var responseJSON = pm.response.json();\r",
+							"     pm.expect(responseJSON).to.be.an('array');\r",
+							"     responseJSON.forEach((table) => {\r",
+							"            pm.expect(table).to.have.property('id');\r",
+							"            pm.expect(table).to.have.property('tableName');\r",
+							"            pm.expect(table).to.have.property('seats');\r",
+							"     });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5095/Reservation/GetTables",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"Reservation",
+						"GetTables"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reserve",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains table reservation details\", function () {\r",
+							"    var responseBody = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseBody).to.be.an('object');\r",
+							"\r",
+							"    pm.expect(responseBody).to.have.property('tableId');\r",
+							"    pm.expect(responseBody).to.have.property('table');\r",
+							"    pm.expect(responseBody.table).to.be.an('object');\r",
+							"    pm.expect(responseBody.table).to.have.property('id');\r",
+							"    pm.expect(responseBody.table).to.have.property('tableName');\r",
+							"    pm.expect(responseBody.table).to.have.property('seats');\r",
+							"\r",
+							"    pm.expect(responseBody).to.have.property(`openDayId`);\r",
+							"    pm.expect(responseBody).to.have.property(`openDay`);\r",
+							"    pm.expect(responseBody.openDay).to.have.property(`id`);\r",
+							"    pm.expect(responseBody.openDay).to.have.property(`date`);\r",
+							"    pm.expect(responseBody.openDay).to.have.property(`openTime`);\r",
+							"    pm.expect(responseBody.openDay).to.have.property(`closeTime`);\r",
+							"\r",
+							"    pm.expect(responseBody).to.have.property(`timeSlotId`);\r",
+							"    pm.expect(responseBody).to.have.property(`timeSlot`);\r",
+							"    pm.expect(responseBody.timeSlot).to.have.property(`id`);\r",
+							"    pm.expect(responseBody.timeSlot).to.have.property(`date`);\r",
+							"    pm.expect(responseBody.timeSlot).to.have.property(`startTime`);\r",
+							"    pm.expect(responseBody.timeSlot).to.have.property(`duration`);\r",
+							"\r",
+							"    pm.expect(responseBody).to.have.property(`fullName`);\r",
+							"    pm.expect(responseBody).to.have.property(`email`);\r",
+							"    pm.expect(responseBody).to.have.property(`phoneNumber`);\r",
+							"    pm.expect(responseBody).to.have.property(`sendReminders`);\r",
+							"    pm.expect(responseBody).to.have.property(`comment`);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tableId\": 3,\r\n  \"timeSlotId\": 23,\r\n  \"fullName\": \"Keen Dicipuli\",\r\n  \"email\": \"email@email.com\",\r\n  \"phoneNumber\": \"12345678\",\r\n  \"sendReminders\": true,\r\n  \"comment\": \"This is a comment.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5095/Reservation/Reserve",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"Reservation",
+						"Reserve"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SetSettings",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Resonse should include settings data with all fields\", function () {\r",
+							"    var responseJson = pm.response.json();\r",
+							"     \r",
+							"     pm.expect(responseJson).to.be.an('object');\r",
+							"     pm.expect(responseJson).to.have.property('settings');\r",
+							"     pm.expect(responseJson.settings).to.have.property('timeSlotDuration');\r",
+							"     pm.expect(responseJson.settings).to.have.property('openTime');\r",
+							"     pm.expect(responseJson.settings).to.have.property('closeTime');\r",
+							"     pm.expect(responseJson.settings).to.have.property('servingInterval');\r",
+							"     pm.expect(responseJson.settings).to.have.property('reservationsPerTimeSlot');\r",
+							"     pm.expect(responseJson.settings).to.have.property('reservationNotificationEmails');\r",
+							"     pm.expect(responseJson.settings).to.have.property('reservationNotificationPhoneNumbers');\r",
+							"     pm.expect(responseJson.settings).to.have.property('customerReminderSMSTemplate');\r",
+							"     pm.expect(responseJson.settings).to.have.property('customerReminderEmailTemplate');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"settings\": {\r\n    \"timeSlotDuration\": \"1:00:00\",\r\n    \"openTime\": \"15:00:00\",\r\n    \"closeTime\": \"22:00:00\",\r\n    \"servingInterval\": \"00:20:00\",\r\n    \"reservationsPerTimeSlot\": 3,\r\n    \"reservationNotificationEmails\": [\r\n      {\r\n        \"email\": \"test@test.dk\"\r\n      },\r\n      {\r\n        \"email\": \"mad@illerslot.dk\"\r\n      }\r\n    ],\r\n    \"reservationNotificationPhoneNumbers\": [\r\n      {\r\n        \"countryCode\": 46,\r\n        \"phoneNumber\": \"87654321\"\r\n      }\r\n    ],\r\n    \"customerReminderSMSTemplate\": \"This is the API test sms template.\",\r\n    \"customerReminderEmailTemplate\": \"This is the API test email template.\"\r\n  },\r\n  \"tables\": [\r\n        {\r\n            \"id\": 1,\r\n            \"tableName\": \"Table 1\",\r\n            \"seats\": 2\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"tableName\": \"Table 2\",\r\n            \"seats\": 4\r\n        }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5095/Settings/SetSettings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"Settings",
+						"SetSettings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSettings",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Resonse should contain settings data with all fields\", function () {\r",
+							"     var responseJson = pm.response.json();\r",
+							"     \r",
+							"     pm.expect(responseJson).to.be.an('object');\r",
+							"     pm.expect(responseJson).to.have.property('settings');\r",
+							"     pm.expect(responseJson.settings).to.have.property('timeSlotDuration');\r",
+							"     pm.expect(responseJson.settings).to.have.property('openTime');\r",
+							"     pm.expect(responseJson.settings).to.have.property('closeTime');\r",
+							"     pm.expect(responseJson.settings).to.have.property('servingInterval');\r",
+							"     pm.expect(responseJson.settings).to.have.property('reservationsPerTimeSlot');\r",
+							"     pm.expect(responseJson.settings).to.have.property('reservationNotificationEmails');\r",
+							"     pm.expect(responseJson.settings).to.have.property('reservationNotificationPhoneNumbers');\r",
+							"     pm.expect(responseJson.settings).to.have.property('customerReminderSMSTemplate');\r",
+							"     pm.expect(responseJson.settings).to.have.property('customerReminderEmailTemplate');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5095/Settings/GetSettings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"Settings",
+						"GetSettings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetTablePlanForDate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains reservation details with all fields\", function () {\r",
+							"     var responseJson = pm.response.json();\r",
+							"     pm.expect(responseJson).to.be.an('object');\r",
+							"     pm.expect(responseJson.reservations).to.be.an('array');\r",
+							"     responseJson.reservations.forEach((reservation) => {\r",
+							"            pm.expect(reservation).to.have.property('id');\r",
+							"            pm.expect(reservation).to.have.property('tableId');\r",
+							"            pm.expect(reservation.table).to.be.an('object');\r",
+							"            pm.expect(reservation.table).to.have.property('id');\r",
+							"            pm.expect(reservation.table).to.have.property('tableName');\r",
+							"            pm.expect(reservation.table).to.have.property('seats');\r",
+							"            pm.expect(reservation).to.have.property('openDayId');\r",
+							"            pm.expect(reservation.openDay).to.be.an('object');\r",
+							"            pm.expect(reservation.openDay).to.have.property('id');\r",
+							"            pm.expect(reservation.openDay).to.have.property('date');\r",
+							"            pm.expect(reservation.openDay).to.have.property('openTime');\r",
+							"            pm.expect(reservation.openDay).to.have.property('closeTime');\r",
+							"            pm.expect(reservation).to.have.property('timeSlotId');\r",
+							"            pm.expect(reservation.timeSlot).to.be.an('object');\r",
+							"            pm.expect(reservation.timeSlot).to.have.property('id');\r",
+							"            pm.expect(reservation.timeSlot).to.have.property('date');\r",
+							"            pm.expect(reservation.timeSlot).to.have.property('startTime');\r",
+							"            pm.expect(reservation.timeSlot).to.have.property('duration');\r",
+							"            pm.expect(reservation).to.have.property('fullName');\r",
+							"            pm.expect(reservation).to.have.property('email');\r",
+							"            pm.expect(reservation).to.have.property('phoneNumber');\r",
+							"            pm.expect(reservation).to.have.property('sendReminders');\r",
+							"            pm.expect(reservation).to.have.property('comment');\r",
+							"     });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"date\": \"2024-01-01\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5095/TablePlan/GetTablePlanForDate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5095",
+					"path": [
+						"TablePlan",
+						"GetTablePlanForDate"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "email",
+			"value": "\"test@test.dk\"",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "\"test\"",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "\"1234\"",
+			"type": "string"
+		},
+		{
+			"key": "registrationCode",
+			"value": "\"ghzGV7ZVHrA63hgog!2tYzcxGexALS\"",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": null,
+			"type": "string"
+		}
+	]
+}

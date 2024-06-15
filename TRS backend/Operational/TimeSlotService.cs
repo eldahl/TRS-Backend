@@ -93,7 +93,7 @@ namespace TRS_backend.Services
             await _dbContext.TableReservations.AddAsync(reservation);
             await _dbContext.SaveChangesAsync();
             
-            return new TblTableReservations();
+            return reservation;
         }
     }
 }

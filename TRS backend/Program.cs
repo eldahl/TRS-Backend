@@ -96,7 +96,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpLogging();
 
 // HTTP is insecure 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 app.MapControllers();

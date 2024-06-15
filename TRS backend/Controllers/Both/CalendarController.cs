@@ -54,6 +54,7 @@ namespace TRS_backend.Controllers.Both
                 if (requestBody.IsOpen == false)
                 {
                     _dbContext.OpenDays.Remove(await _dbContext.OpenDays.Select(od => od).Where(od => od.Date == requestBody.Date).FirstAsync());
+                    await _dbContext.SaveChangesAsync();
                     return Ok();
                 }
                 else
@@ -69,7 +70,7 @@ namespace TRS_backend.Controllers.Both
                 OpenTime = _settingsContext.Settings.OpenTime,
                 CloseTime = _settingsContext.Settings.CloseTime
             });
-
+            await _dbContext.SaveChangesAsync();
             return Ok();
         }
     }

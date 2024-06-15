@@ -26,7 +26,12 @@ namespace TRS_backend.Controllers
         [HttpPost("GetTablePlanForDate")]
         public ActionResult<DTOTablePlanForDateResponse> GetTablePlanForDate([FromBody] DTOTablePlanForDateRequest requestBody)
         {
-            var reservationsList = _dbContext.TableReservations.Select(tr => tr).Where(tr => tr.OpenDay.Date == requestBody.Date).ToList();
+            var reservationsList = _dbContext.TableReservations
+                .Select(tr => tr)
+                .Include(tr => tr.Table)
+                .Include(tr => tr.OpenDay)
+                .Include(tr => tr.TimeSlot)
+                .Where(tr => tr.OpenDay.Date == requestBody.Date).ToList();
 
             return new DTOTablePlanForDateResponse() {
                 Reservations = reservationsList

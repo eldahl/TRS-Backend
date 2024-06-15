@@ -26,7 +26,7 @@ namespace TRS_backend.Controllers
         /// </summary>
         /// <returns>Settings object encapsulated in Response object</returns>
         [Authorize]
-        [HttpPost("GetSettings")]
+        [HttpGet("GetSettings")]
         public ActionResult<DTOSettingsResponse> GetSettings()
         {
             return new DTOSettingsResponse()

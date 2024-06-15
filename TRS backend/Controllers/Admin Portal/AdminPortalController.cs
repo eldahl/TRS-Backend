@@ -40,7 +40,7 @@ namespace TRS_backend.Controllers
                 return BadRequest("Failed to login");
             }
                 // Regex to only allow lower- and uppercase letters, numbers, and hyphens
-            Regex usernameRegex = new Regex("[^a-zA-Z0-9-]");
+            Regex usernameRegex = new Regex("[a-zA-Z0-9-]");
             if (requestBody.Username is not null && !usernameRegex.IsMatch(requestBody.Username))
             {
                 return BadRequest("Failed to login");
@@ -111,7 +111,7 @@ namespace TRS_backend.Controllers
                 return BadRequest("Failed to register");
             }
                 // Regex to only allow lower- and uppercase letters, numbers, and hyphens
-            Regex usernameRegex = new Regex("[^a-zA-Z0-9-]");
+            Regex usernameRegex = new Regex("[a-zA-Z0-9-]");
             if (!usernameRegex.IsMatch(requestBody.Username)) {
                 return BadRequest("Failed to register");
             }
@@ -148,6 +148,10 @@ namespace TRS_backend.Controllers
                 Salt = salt,
                 CreatedAt = DateTime.Now
             };
+
+            // Add the user to the database
+            await _dbContext.Users.AddAsync(newUser);
+            await _dbContext.SaveChangesAsync();
 
             return Ok("Successfully registered user.");
         }
