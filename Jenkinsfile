@@ -24,7 +24,9 @@ pipeline {
 		stage('Deploy API testing environment') {
 			steps {
 				// Deploy test database
-				sh "docker run --rm -p 3306:3306 -e MYSQL_ROOT_HOST:"%" -e MYSQL_ROOT_PASSWORD=MySuperSecretPassword123 -d mysql:latest"
+				sh """
+					docker run --rm -p 3306:3306 -e MYSQL_ROOT_HOST="%" -e MYSQL_ROOT_PASSWORD=MySuperSecretPassword123 -d mysql:latest
+				"""
 				
 				// Sleep 10 seconds so the database has time to be set up
 				sleep(time:10, unit:"SECONDS")
