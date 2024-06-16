@@ -8,7 +8,7 @@ pipeline {
 				
 				// Set path to include dotnet tools so we can use dotnet ef
 				sh """
-					export PATH="$PATH:$HOME/.dotnet/tools/
+					export PATH="$PATH:$HOME/.dotnet/tools/"
 				"""
 
 				// Install Entity Framework for migrations
