@@ -4,10 +4,10 @@ pipeline {
 		stage('Setup') {
 			steps {
 				echo 'Starting build...'
-
+				echo "Path: ${PATH}"
 				// Install Entity Framework for migrations
-				//sh 'dotnet tool uninstall --global dotnet-ef'
-				//sh 'dotnet tool install --global dotnet-ef'
+				//sh 'dotnet tool uninstall --global dotnet-ef --version 8.0'
+				//sh 'dotnet tool install --global dotnet-ef --version 8.0'
 			}
 		}
 		stage('Unit testing') {
