@@ -33,7 +33,7 @@ pipeline {
 
 				// Apply migrations to datebase using Entity Framework
 				dir('TRS backend') {
-					sh "dotnet-ef database update"
+					sh "dotnet-ef database update --configuration Release -- --environment Release"
 				}
 
 				// Build backend API docker image
