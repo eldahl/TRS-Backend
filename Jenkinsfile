@@ -23,7 +23,7 @@ pipeline {
 				sh "dotnet ef database update"
 
 				// Build backend API docker image
-				sh "docker build --no-cache -f 'TRS\ backend/Dockerfile' -t trsbackend ."
+				sh `docker build --no-cache -f "TRS\ backend/Dockerfile" -t trsbackend .`
 
 				// Run backend API
 				sh "docker run --rm -p 3000:3000 -d trsbackend"
