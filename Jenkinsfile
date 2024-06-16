@@ -9,6 +9,12 @@ pipeline {
 		stage('Setup') {
 			steps {
 				echo 'Starting build...'
+
+				// Kill the two docker containers running the database and the backend API if they are running
+				catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+					sh "docker kill \$(docker ps -qf expose=3306)"
+					sh "docker kill \$(docker ps -qf expose=3000)"
+				}
 				
 				echo "Path: ${PATH}"
 
