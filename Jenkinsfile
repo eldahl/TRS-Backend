@@ -12,8 +12,8 @@ pipeline {
 
 				// Kill the two docker containers running the database and the backend API if they are running
 				catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
-					sh "docker kill \$(docker ps -qf expose=3306)"
-					sh "docker kill \$(docker ps -qf expose=3000)"
+					sh "docker kill \$(docker ps -q --filter ancestor=mysql:latest)"
+					sh "docker kill \$(docker ps -qf name=trsbackend)"
 				}
 				
 				echo "Path: ${PATH}"
@@ -48,7 +48,7 @@ pipeline {
 				"""
 
 				// Run backend API
-				sh "docker run --rm -p 3000:3000 -d trsbackend"
+				sh "docker run --rm --network=host -d trsbackend"
 				
 				// Sleep 10 seconds so the API has time to initialize
 				sleep(time:10, unit:"SECONDS")
@@ -63,8 +63,8 @@ pipeline {
 			steps {
 				// Kill the two docker containers running the database and the backend API
 				catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
-					sh "docker kill \$(docker ps -qf expose=3306)"
-					sh "docker kill \$(docker ps -qf expose=3000)"
+					sh "docker kill \$(docker ps -q --filter ancestor=mysql:latest)"
+					sh "docker kill \$(docker ps -qf name=trsbackend)"
 				}
 
 				// Purge all unused images from docker
