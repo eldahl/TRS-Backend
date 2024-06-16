@@ -30,7 +30,7 @@ pipeline {
 				sleep(time:10, unit:"SECONDS")
 
 				// Apply migrations to datebase using Entity Framework
-				dir('TRS Backend') {
+				dir('TRS backend') {
 					sh "dotnet-ef database update"
 				}
 
