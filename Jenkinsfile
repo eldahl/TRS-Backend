@@ -4,6 +4,8 @@ pipeline {
 		stage('Setup') {
 			steps {
 				echo 'Starting build...'
+				
+				tool name: '.NET 8.0', type: 'dotnetsdk'
 
 				// Install Entity Framework for migrations
 				sh "dotnet tool install --global dotnet-ef"
