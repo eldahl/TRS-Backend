@@ -4,6 +4,9 @@ pipeline {
 		stage('Setup') {
 			steps {
 				echo 'Starting build...'
+
+				// Install Entity Framework for migrations
+				sh "dotnet tool install dotnet-ef"
 			}
 		}
 		stage('Unit testing') {
