@@ -6,8 +6,8 @@ pipeline {
 				echo 'Starting build...'
 
 				// Install Entity Framework for migrations
-				sh 'dotnet tool uninstall --global dotnet-ef'
-				sh 'dotnet tool install --global dotnet-ef'
+				//sh 'dotnet tool uninstall --global dotnet-ef'
+				//sh 'dotnet tool install --global dotnet-ef'
 			}
 		}
 		stage('Unit testing') {
