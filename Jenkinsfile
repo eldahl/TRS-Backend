@@ -17,7 +17,7 @@ pipeline {
 				sh "docker run --rm -p 3306:3306 -e MYSQL_ROOT_PASSWORD=MySuperSecretPassword123 -d mysql:latest"
 				
 				// Sleep 10 seconds so the database has time to be set up
-				sleep(10, "SECONDS")
+				sleep(time:10, unit:"SECONDS")
 
 				// Apply migrations to datebase using Entity Framework
 				sh "dotnet ef database update"
