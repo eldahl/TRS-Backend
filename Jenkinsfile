@@ -20,7 +20,7 @@ pipeline {
 				sleep(time:10, unit:"SECONDS")
 
 				// Apply migrations to datebase using Entity Framework
-				sh "dotnet-ef database update"
+				sh "dotnet ef database update"
 
 				// Build backend API docker image
 				sh """
