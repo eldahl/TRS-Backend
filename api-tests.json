@@ -50,12 +50,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5095/AdminPortal/Register",
+					"raw": "http://localhost:3000/AdminPortal/Register",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"AdminPortal",
 						"Register"
@@ -101,12 +101,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5095/AdminPortal/Login",
+					"raw": "http://localhost:3000/AdminPortal/Login",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"AdminPortal",
 						"Login"
@@ -160,12 +160,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5095/Debug/Role",
+					"raw": "http://localhost:3000/Debug/Role",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"Debug",
 						"Role"
@@ -213,12 +213,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5095/Calendar/SetOpenDayForDate",
+					"raw": "http://localhost:3000/Calendar/SetOpenDayForDate",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"Calendar",
 						"SetOpenDayForDate"
@@ -272,12 +272,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5095/Calendar/GetOpenDaysByMonthAndYear",
+					"raw": "http://localhost:3000/Calendar/GetOpenDaysByMonthAndYear",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"Calendar",
 						"GetOpenDaysByMonthAndYear"
@@ -326,12 +326,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5095/Reservation/GetTimeSlotsForDate",
+					"raw": "http://localhost:3000/Reservation/GetTimeSlotsForDate",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"Reservation",
 						"GetTimeSlotsForDate"
@@ -370,12 +370,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5095/Reservation/GetTables",
+					"raw": "http://localhost:3000/Reservation/GetTables",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"Reservation",
 						"GetTables"
@@ -446,12 +446,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5095/Reservation/Reserve",
+					"raw": "http://localhost:3000/Reservation/Reserve",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"Reservation",
 						"Reserve"
@@ -515,12 +515,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5095/Settings/SetSettings",
+					"raw": "http://localhost:3000/Settings/SetSettings",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"Settings",
 						"SetSettings"
@@ -575,12 +575,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5095/Settings/GetSettings",
+					"raw": "http://localhost:3000/Settings/GetSettings",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"Settings",
 						"GetSettings"
@@ -659,12 +659,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5095/TablePlan/GetTablePlanForDate",
+					"raw": "http://localhost:3000/TablePlan/GetTablePlanForDate",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5095",
+					"port": "3000",
 					"path": [
 						"TablePlan",
 						"GetTablePlanForDate"
