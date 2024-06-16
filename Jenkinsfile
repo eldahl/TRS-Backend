@@ -73,7 +73,7 @@ pipeline {
 				sh "docker image prune -a -f"
 
 				// Remove all exited containers
-				sh "docker rm $(docker ps -a -f status=exited -q)"
+				sh "docker rm \$(docker ps -a -f status=exited -q)"
 			}
 		}
 	}
