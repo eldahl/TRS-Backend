@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
     <RootNamespace>TRS_backend</RootNamespace>
+    <UserSecretsId>1114fa8c-39d2-470d-965d-02e5c590ee35</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +17,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.1" />
   </ItemGroup>

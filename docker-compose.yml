@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  mysqldb:
+    image: mysql:latest
+    networks:
+      - bridge
+    ports:
+      - '3306:3306'
+      
+  trsbackend:
+    image: ${DOCKER_REGISTRY-}trsbackend
+    build:
+      context: .
+      dockerfile: 'TRS Backend/Dockerfile'
+    networks:
+      - bridge
+    ports:
+      - '3000:3000'
+
+networks:
+  bridge: {}
