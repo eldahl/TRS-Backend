@@ -8,23 +8,25 @@ pipeline {
 		}
 		stage('Unit testing') {
 			steps {
-				echo 'Testing...'
+			 	echo 'Testing...'
 			}			
 		}
 		stage('Deploy API testing environment') {
 			steps {
-				sh "docker compose up"
-
-				// Build docker image
-				//sh "docker build --no-cache -f "TRS Backend/Dockerfile" -t trsbackend ."
+				// Deploy test database
+				sh "docker run --rm -p 3306:3306 -e MYSQL_ROOT_PASSWORD=MySuperSecretPassword123 -d mysql:latest"
 				
-				// Kill previous container
-				//catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
-				//	sh "docker kill \$(docker ps --format '{{.ID}} {{.Ports}}' | grep '0.0.0.0:3000->' | cut -d ' ' -f1)"	
-				//}
-				// Run the image with removal of container after completion, 
-				// expose host port 80 -> container port 3000, detached (execution can continue)
-				//sh "docker run --rm -p 3000:3000 -d trsbackend"
+				// Sleep 10 seconds so the database has time to be set up
+				sleep(10, "SECONDS")
+
+				// Apply migrations to datebase using Entity Framework
+				sh "dotnet ef database update"
+
+				// Build backend API docker image
+				sh "docker build --no-cache -f "TRS\ backend/Dockerfile" -t trsbackend ."
+
+				// Run backend API
+				sh "docker run --rm -p 3000:3000 -d trsbackend"
 			}
 		}
 		stage('API Testing') {
@@ -34,7 +36,11 @@ pipeline {
 		}
 		stage('Stop API Testing environment and Clean') {
 			steps {
-				sh "docker compose down"
+				// Kill the two docker containers running the database and the backend API
+				catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+					sh "docker kill \$(docker ps -qf expose=3306)"
+					sh "docker kill \$(docker ps -qf expose=3000)"
+				}
 
 				// Purge all unused images from docker
 				sh "docker image prune -a -f"
