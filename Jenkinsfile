@@ -1,16 +1,14 @@
 pipeline {
 	agent any
+
+	environment {
+		// Set path to include dotnet tools so we can use dotnet ef
+		PATH = "$PATH:$HOME/.dotnet/tools/"
+	}
 	stages {
 		stage('Setup') {
 			steps {
 				echo 'Starting build...'
-				
-				echo "Path: ${PATH}"
-				
-				// Set path to include dotnet tools so we can use dotnet ef
-				sh """
-					export PATH="$PATH:$HOME/.dotnet/tools/"
-				"""
 				
 				echo "Path: ${PATH}"
 
