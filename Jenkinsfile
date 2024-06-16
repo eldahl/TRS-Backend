@@ -13,7 +13,7 @@ pipeline {
 				// Kill the two docker containers running the database and the backend API if they are running
 				catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
 					sh "docker kill \$(docker ps -q --filter ancestor=mysql:latest)"
-					sh "docker kill \$(docker ps -qf name=trsbackend)"
+					sh "docker kill \$(docker ps -q --filter ancestor=trsbackend)"
 				}
 				
 				echo "Path: ${PATH}"
@@ -66,11 +66,14 @@ pipeline {
 				// Kill the two docker containers running the database and the backend API
 				catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
 					sh "docker kill \$(docker ps -q --filter ancestor=mysql:latest)"
-					sh "docker kill \$(docker ps -qf name=trsbackend)"
+					sh "docker kill \$(docker ps -q --filter ancestor=trsbackend)"
 				}
 
 				// Purge all unused images from docker
 				sh "docker image prune -a -f"
+
+				// Remove all exited containers
+				sh "docker rm $(docker ps -a -f status=exited -q)"
 			}
 		}
 	}
