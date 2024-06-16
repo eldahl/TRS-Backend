@@ -4,15 +4,18 @@ pipeline {
 		stage('Setup') {
 			steps {
 				echo 'Starting build...'
+				
 				echo "Path: ${PATH}"
 				
 				// Set path to include dotnet tools so we can use dotnet ef
 				sh """
-					export PATH="$PATH:$HOME/.dotnet/tools/"
+					export PATH="$PATH:$HOME/.dotnet/tools/
 				"""
+				
+				echo "Path: ${PATH}"
 
 				// Install Entity Framework for migrations
-				//sh 'dotnet tool install --global dotnet-ef'
+				sh 'dotnet tool install --global dotnet-ef'
 			}
 		}
 		stage('Unit testing') {
@@ -30,7 +33,7 @@ pipeline {
 
 				// Apply migrations to datebase using Entity Framework
 				dir('TRS Backend') {
-					sh "dotnet ef database update"
+					sh "dotnet-ef database update"
 				}
 
 				// Build backend API docker image
