@@ -49,6 +49,9 @@ pipeline {
 
 				// Run backend API
 				sh "docker run --rm -p 3000:3000 -d trsbackend"
+				
+				// Sleep 10 seconds so the API has time to initialize
+				sleep(time:10, unit:"SECONDS")
 			}
 		}
 		stage('API Testing') {
