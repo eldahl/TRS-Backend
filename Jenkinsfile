@@ -68,9 +68,6 @@ pipeline {
 					sh "docker kill \$(docker ps -q --filter ancestor=mysql:latest)"
 					sh "docker kill \$(docker ps -q --filter ancestor=trsbackend)"
 
-					// Purge all unused images from docker
-					sh "docker image prune -a -f"
-
 					// Remove all exited containers
 					sh "docker rm \$(docker ps -a -f status=exited -q)"
 				}
