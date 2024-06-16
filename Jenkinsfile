@@ -38,7 +38,7 @@ pipeline {
 
 				// Build backend API docker image
 				sh """
-					docker build --no-cache -f "TRS\\ backend/Dockerfile" -t trsbackend .
+					docker build --no-cache -f "TRS backend/Dockerfile" -t trsbackend .
 				"""
 
 				// Run backend API
