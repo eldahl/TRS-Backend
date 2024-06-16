@@ -29,7 +29,7 @@ pipeline {
 		}
 		stage('API Testing') {
 			steps {
-				sh "newman run api-test.json --reporters cli,junit --reporter-junit-export 'api-testing-junit-report.xml'"
+				sh "newman run api-tests.json --reporters cli,junit --reporter-junit-export 'api-testing-junit-report.xml'"
 			}
 		}
 		stage('Stop API Testing environment and Clean') {
