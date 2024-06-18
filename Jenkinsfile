@@ -35,7 +35,7 @@ pipeline {
 				"""
 				
 				// Sleep 10 seconds so the database has time to be set up
-				sleep(time:10, unit:"SECONDS")
+				sleep(time:20, unit:"SECONDS")
 
 				// Apply migrations to datebase using Entity Framework
 				dir('TRS backend') {
