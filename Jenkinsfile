@@ -26,10 +26,12 @@ pipeline {
 			steps {
 			 	echo 'Testing...'
 	
-				dir('TRS backend test') {
-					sh 'dotnet add package coverlet.collector'
-					sh 'dotnet add package coverlet.msbuild'
-					sh "dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile='**/*Migrations/*.cs'"
+				catchError { 
+					dir('TRS backend test') {
+						sh 'dotnet add package coverlet.collector'
+						sh 'dotnet add package coverlet.msbuild'
+						sh "dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile='**/*Migrations/*.cs'"
+					}
 				}
 			}
 			post {
