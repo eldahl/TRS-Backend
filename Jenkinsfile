@@ -25,7 +25,21 @@ pipeline {
 		stage('Unit testing') {
 			steps {
 			 	echo 'Testing...'
-			}			
+	
+				dir('TRS backend test') {
+					sh 'dotnet add package coverlet.collector'
+					sh 'dotnet add package coverlet.msbuild'
+					sh "dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile='**/*Migrations/*.cs'"
+				}
+			}
+			post {
+				success {
+					archiveArtifacts 'TRS backend test/coverage.cobertura.xml'
+					publishCoverage adapters: [istanbulCoberturaAdapter(path: 'TRS backend test/coverage.cobertura.xml', thresholds: [
+						[failUnhealthy: true, thresholdTarget: 'Conditional', unhealthyThreshold: 80.0, unstableThreshold: 25.0]
+					])], checksName: '', sourceFileResolver: sourceFiles('NEVER_STORE')
+				}
+			}
 		}
 		stage('Deploy API testing environment') {
 			steps {
