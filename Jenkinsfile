@@ -59,7 +59,7 @@ pipeline {
 				catchError {
 					sh "newman run api-tests.json --reporters cli,junit --reporter-junit-export 'api-testing-junit-report.xml'"
 				}
-				junit 'api-testing-junit-report.xml'
+				junit skipPublishingChecks: true, testResults: 'api-testing-junit-report.xml'
 			}
 		}
 		stage('Stop API Testing environment and Clean') {
