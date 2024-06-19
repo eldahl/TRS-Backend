@@ -90,11 +90,11 @@ namespace TRS_backend.Controllers.Both
                 return BadRequest("Full Name field is not recognized as a name");
             }
             // Email validator
-            if (requestBody.Email is not null)
-            {
-                var email = new System.Net.Mail.MailAddress(requestBody.Email);
-                if (email is null)
-                {
+            if (requestBody.Email is not null) {
+                try {
+                    var email = new System.Net.Mail.MailAddress(requestBody.Email);
+                }
+                catch (Exception) {
                     return BadRequest("Email field is not recognized as an email");
                 }
             }

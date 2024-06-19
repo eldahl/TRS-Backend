@@ -6,12 +6,32 @@ using System.Text.Json;
 using TRS_backend.API_Models;
 using TRS_backend.API_Models.Admin_Portal.Settings;
 
-namespace TRS_backend_test
+namespace TRS_backend_test.OperationalTests
 {
     public class SettingsFileContextTests
     {
         private readonly string _tempFilePath = Path.GetTempPath();
         private readonly string _tempFileName = "tempsettings.json";
+
+        [Fact]
+        public void Constructor_SettingsFileIsCreated()
+        {
+            // Arrange
+            var mockConfig = new Mock<IConfiguration>();
+            mockConfig.Setup(x => x["SettingsFileName"]).Returns(_tempFileName);
+            mockConfig.Setup(x => x["SettingsFilePath"]).Returns(_tempFilePath);
+            var config = mockConfig.Object;
+
+            // Act
+            var context = new SettingsFileContext(config);
+
+            // Assert
+            Assert.NotNull(context);
+            Assert.True(File.Exists(Path.Combine(_tempFilePath, _tempFileName)));
+
+            // Clean up
+            File.Delete(Path.Combine(_tempFilePath, _tempFileName));
+        }
 
         [Fact]
         public void SaveSettings_WritesToFile()
@@ -50,11 +70,28 @@ namespace TRS_backend_test
             string fullPath = Path.Combine(_tempFilePath, _tempFileName);
             Assert.True(File.Exists(fullPath));
             string content = File.ReadAllText(fullPath);
-            var settings = JsonSerializer.Deserialize<Settings>(content);
-            Assert.NotNull(settings);
-            Assert.Equal("00:02:00", settings.TimeSlotDuration);
 
-            // Cleanup
+            var settings = JsonSerializer.Deserialize<Settings>(content);
+
+            Assert.NotNull(settings);
+
+            Assert.Equal(settingsToWrite.TimeSlotDuration, settings.TimeSlotDuration);
+            Assert.Equal(settingsToWrite.ReservationsPerTimeSlot, settings.ReservationsPerTimeSlot);
+            Assert.Equal(settingsToWrite.ServingInterval, settings.ServingInterval);
+            Assert.Equal(settingsToWrite.CustomerReminderEmailTemplate, settings.CustomerReminderEmailTemplate);
+            Assert.Equal(settingsToWrite.CustomerReminderSMSTemplate, settings.CustomerReminderSMSTemplate);
+
+            foreach (var element in settingsToWrite.ReservationNotificationEmails.Zip(settings.ReservationNotificationEmails))
+            {
+                Assert.Equal(element.First.Email, element.Second.Email);
+            }
+            foreach (var element in settingsToWrite.ReservationNotificationPhoneNumbers.Zip(settings.ReservationNotificationPhoneNumbers))
+            {
+                Assert.Equal(element.First.PhoneNumber, element.Second.PhoneNumber);
+                Assert.Equal(element.First.CountryCode, element.Second.CountryCode);
+            }
+
+            // Clean up
             File.Delete(fullPath);
         }
 
@@ -99,7 +136,8 @@ namespace TRS_backend_test
             Assert.Equal(settingsToLoad.CloseTime, loadedSettings.CloseTime);
             Assert.Equal(settingsToLoad.CustomerReminderEmailTemplate, loadedSettings.CustomerReminderEmailTemplate);
             Assert.Equal(settingsToLoad.CustomerReminderSMSTemplate, loadedSettings.CustomerReminderSMSTemplate);
-            foreach (var element in settingsToLoad.ReservationNotificationEmails.Zip(loadedSettings.ReservationNotificationEmails)) {
+            foreach (var element in settingsToLoad.ReservationNotificationEmails.Zip(loadedSettings.ReservationNotificationEmails))
+            {
                 Assert.Equal(element.First.Email, element.Second.Email);
             }
             foreach (var element in settingsToLoad.ReservationNotificationPhoneNumbers.Zip(loadedSettings.ReservationNotificationPhoneNumbers))
@@ -111,7 +149,7 @@ namespace TRS_backend_test
             Assert.Equal(settingsToLoad.ServingInterval, loadedSettings.ServingInterval);
             Assert.Equal(settingsToLoad.TimeSlotDuration, loadedSettings.TimeSlotDuration);
 
-            // Cleanup
+            // Clean up
             File.Delete(fullPath);
         }
     }

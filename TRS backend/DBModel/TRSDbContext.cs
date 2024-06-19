@@ -9,15 +9,19 @@ namespace TRS_backend.DBModel
 
         private readonly IConfiguration _configuration;
 
+        public TRSDbContext() {
+            _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        }
+
         public TRSDbContext(IConfiguration configuration, DbContextOptions<TRSDbContext> options) : base(options) {
             _configuration = configuration;
         }
 
-        public DbSet<TblUsers> Users { get; set; }
-        public DbSet<TblOpenDays> OpenDays { get; set; }
-        public DbSet<TblTimeSlots> TimeSlots { get; set; }
-        public DbSet<TblTables> Tables { get; set; }
-        public DbSet<TblTableReservations> TableReservations { get; set; }
+        public virtual DbSet<TblUsers> Users { get; set; }
+        public virtual DbSet<TblOpenDays> OpenDays { get; set; }
+        public virtual DbSet<TblTimeSlots> TimeSlots { get; set; }
+        public virtual DbSet<TblTables> Tables { get; set; }
+        public virtual DbSet<TblTableReservations> TableReservations { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

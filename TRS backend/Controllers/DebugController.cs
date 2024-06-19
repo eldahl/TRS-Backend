@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using TRS_backend.DBModel;
 
@@ -13,7 +14,16 @@ namespace TRS_backend.Controllers
         [HttpGet("Role")]
         public ActionResult<string> Role()
         {
-            return HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
+            Claim claim = null!;
+            try {
+                claim = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role);
+            }
+            catch { }
+            
+            if (claim == null || claim.Value.IsNullOrEmpty()) {
+                return Ok("Not authorized");
+            }
+            return claim.Value;
         }
     }
 }

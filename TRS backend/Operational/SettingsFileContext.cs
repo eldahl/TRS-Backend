@@ -15,7 +15,7 @@ namespace TRS_backend.Operational
         private string _settingsFileName = "";
 
         // Settings object that writes to file when set
-        public Settings Settings
+        public virtual Settings Settings
         {
             get { 
                 return _settings; 
@@ -38,9 +38,11 @@ namespace TRS_backend.Operational
             _settingsFileName = _configuration["SettingsFileName"]!;
             _settingsFilePath = _configuration["SettingsFilePath"]!;
 
+            var _settingsFile = Path.Combine(_settingsFilePath, _settingsFileName);
+
             // Create settings file if it does not exist
-            if (!File.Exists(_settingsFileName)) {
-                var stream = File.Create(_settingsFileName);
+            if (!File.Exists(_settingsFile)) {
+                var stream = File.Create(_settingsFile);
                 stream.Close();
             }
             else {

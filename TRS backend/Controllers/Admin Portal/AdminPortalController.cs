@@ -29,7 +29,7 @@ namespace TRS_backend.Controllers
         /// <summary>
         /// Login a user and return a JWT token
         /// </summary>
-        /// <param name="requestBody">Request parameters</param>
+        /// <param name="requestBody">Request parameters</param>    
         /// <returns>JSON Web Token or error response</returns>
         [AllowAnonymous]
         [HttpPost("Login")]
@@ -40,22 +40,30 @@ namespace TRS_backend.Controllers
                 return BadRequest("Failed to login");
             }
                 // Regex to only allow lower- and uppercase letters, numbers, and hyphens
-            Regex usernameRegex = new Regex("[a-zA-Z0-9-]");
+            Regex usernameRegex = new Regex("^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$");
             if (requestBody.Username is not null && !usernameRegex.IsMatch(requestBody.Username))
             {
                 return BadRequest("Failed to login");
             }
                 // Use Mail.MailAddress to validate the email
             if (requestBody.Email is not null) {
-                var email = new System.Net.Mail.MailAddress(requestBody.Email);
-                if (email is null)
-                {
+                try {
+                    var email = new System.Net.Mail.MailAddress(requestBody.Email);
+                }
+                catch (Exception) {
                     return BadRequest("Failed to login");
                 }
             }
 
             // Look up the user in the database by email or username
-            var user = await _dbContext.Users.Select(u => u).Where(u => u.Username == requestBody.Username || u.Email == requestBody.Email).FirstAsync();
+            var userQuery = _dbContext.Users.Select(u => u).Where(u => u.Username == requestBody.Username || u.Email == requestBody.Email);
+
+            // Check if the user exists in the database
+            if (!userQuery.Any())
+                return BadRequest("Failed to login");
+            
+            // Get the first user matching the userQuery
+            var user = await userQuery.FirstAsync();
 
             // Check if the user exists by checking if it is not null
             if (user is null)
@@ -90,7 +98,7 @@ namespace TRS_backend.Controllers
                     Audience = _configuration["JWT:Audience"]
                 };
 
-                return Ok(tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor)));
+                return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
             }
 
             return BadRequest("Failed to login");
@@ -111,7 +119,7 @@ namespace TRS_backend.Controllers
                 return BadRequest("Failed to register");
             }
                 // Regex to only allow lower- and uppercase letters, numbers, and hyphens
-            Regex usernameRegex = new Regex("[a-zA-Z0-9-]");
+            Regex usernameRegex = new Regex("^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$");
             if (!usernameRegex.IsMatch(requestBody.Username)) {
                 return BadRequest("Failed to register");
             }
@@ -153,7 +161,7 @@ namespace TRS_backend.Controllers
             await _dbContext.Users.AddAsync(newUser);
             await _dbContext.SaveChangesAsync();
 
-            return Ok("Successfully registered user.");
+            return "Successfully registered user.";
         }
 
     }

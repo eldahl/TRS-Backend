@@ -28,9 +28,9 @@ namespace TRS_backend.Controllers.Both
         /// <returns>Open days in the given month & year</returns>
         [AllowAnonymous]
         [HttpPost("GetOpenDaysByMonthAndYear")]
-        public ActionResult<DTOOpenDaysByMonthAndYearResponse> GetOpenDaysByMonthAndYear([FromBody] DTOOpenDaysByMonthAndYearRequest requestBody)
+        public async Task<ActionResult<DTOOpenDaysByMonthAndYearResponse>> GetOpenDaysByMonthAndYear([FromBody] DTOOpenDaysByMonthAndYearRequest requestBody)
         {
-            var openDays = _dbContext.OpenDays.Select(od => od).Where(od => od.Date.Month == requestBody.Month && od.Date.Year == requestBody.Year).ToList();
+            var openDays = await _dbContext.OpenDays.Select(od => od).Where(od => od.Date.Month == requestBody.Month && od.Date.Year == requestBody.Year).ToListAsync();
 
             return new DTOOpenDaysByMonthAndYearResponse()
             {
@@ -64,7 +64,7 @@ namespace TRS_backend.Controllers.Both
             }
 
             // Insert new open day
-            _dbContext.OpenDays.Add(new TblOpenDays()
+            await _dbContext.OpenDays.AddAsync(new TblOpenDays()
             {
                 Date = requestBody.Date,
                 OpenTime = _settingsContext.Settings.OpenTime,
