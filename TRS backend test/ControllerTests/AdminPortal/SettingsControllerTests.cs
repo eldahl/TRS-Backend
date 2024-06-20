@@ -27,8 +27,7 @@ namespace TRS_backend_test.ControllerTests.AdminPortal
         public void GetSettings_ReturnsSettings()
         {
             // Arrange
-            
-                // SettingsFileContext mock for each test as they run asyncronously and can affect each other
+            // SettingsFileContext mock for each test as they run asyncronously and can affect each other
             Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
             string _tempFilePath = Path.GetTempPath();
             string _tempFileName = "tempsettings.json";
@@ -92,8 +91,7 @@ namespace TRS_backend_test.ControllerTests.AdminPortal
         public async void SetSettings_SetsSettings()
         {
             // Arrange
-
-                // SettingsFileContext mock for each test as they run asyncronously and can affect each other
+            // SettingsFileContext mock for each test as they run asyncronously and can affect each other
             Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
             string _tempFilePath = Path.GetTempPath();
             string _tempFileName = "tempsettings.json";
