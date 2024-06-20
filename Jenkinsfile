@@ -36,10 +36,7 @@ pipeline {
 			}
 			post {
 				success {
-					archiveArtifacts 'TRS backend test/coverage.cobertura.xml'
-					publishCoverage adapters: [istanbulCoberturaAdapter(path: 'TRS backend test/coverage.cobertura.xml', thresholds: [
-						[failUnhealthy: false, thresholdTarget: 'Conditional', unhealthyThreshold: 60.0, unstableThreshold: 25.0]
-					])], checksName: '', sourceFileResolver: sourceFiles('NEVER_STORE')
+					recordCoverage(tools: [cobertura(path: 'TRS backend test/coverage.cobertura.xml')])
 				}
 			}
 		}
