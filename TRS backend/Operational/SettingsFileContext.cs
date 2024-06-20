@@ -64,9 +64,6 @@ namespace TRS_backend.Operational
                 if (settingsFileString is not null) {
                     _settings = JsonSerializer.Deserialize<Settings>(settingsFileString)!;
                 }
-                else {
-                    Debug.WriteLine($"Failed to read {_settingsFilePath}{_settingsFileName}");
-                }
             }
             catch (Exception e)
             {
@@ -84,13 +81,11 @@ namespace TRS_backend.Operational
             string settingsFileString = JsonSerializer.Serialize(_settings);
 
             // Write settings to file
-            try {
+            try
+            {
                 File.WriteAllText(_settingsFilePath + _settingsFileName, settingsFileString);
             }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-            }
+            catch (Exception e) { }
         }
     }
 }
