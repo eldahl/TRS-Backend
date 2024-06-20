@@ -36,7 +36,7 @@ pipeline {
 			}
 			post {
 				success {
-					recordCoverage(tools: [[parser: 'COBERTURA', pattern: '<fileset><filename name="TRS backend test/coverage.cobertura.xml"/></fileset>']])
+					recordCoverage(tools: [[parser: 'COBERTURA']])
 				}
 			}
 		}
