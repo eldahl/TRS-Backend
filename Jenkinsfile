@@ -26,7 +26,7 @@ pipeline {
 			steps {
 			 	echo 'Testing...'
 	
-				catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') { 
+				catchError { 
 					dir('TRS backend test') {
 						sh 'dotnet add package coverlet.collector'
 						sh 'dotnet add package coverlet.msbuild'
@@ -69,14 +69,10 @@ pipeline {
 		}
 		stage('API Testing') {
 			steps {
-				catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+				catchError {
 					sh "newman run api-tests.json --reporters cli,junit --reporter-junit-export 'api-testing-junit-report.xml'"
 				}
-			}
-			post {
-				success {
-					recordCoverage(tools: [[parser: 'JUNIT', pattern: '**/api-testing-junit-report.xml']])
-				}
+				junit skipPublishingChecks: true, testResults: 'api-testing-junit-report.xml'
 			}
 		}
 		stage('Stop API Testing environment and Clean') {
