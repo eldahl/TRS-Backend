@@ -18,26 +18,34 @@ namespace TRS_backend_test.ControllerTests.AdminPortal
     {
         Mock<TRSDbContext> _mockDbContext;
         Mock<SettingsFileContext> _mockSettingsContext;
-
-        private readonly string _tempFilePath = Path.GetTempPath();
-        private readonly string _tempFileName = "tempsettings.json";
+        Mock<IConfiguration> _mockConfig;
+        
 
         public SettingsControllerTests()
         {
             _mockDbContext = new Mock<TRSDbContext>();
+            NewSettingsMock();
+        }
 
-            var mockConfig = new Mock<IConfiguration>();
-            mockConfig.Setup(x => x["SettingsFileName"]).Returns(_tempFileName);
-            mockConfig.Setup(x => x["SettingsFilePath"]).Returns(_tempFilePath);
-            var config = mockConfig.Object;
+        private void NewSettingsMock() {
+            _mockConfig = new Mock<IConfiguration>();
+            _mockConfig.Reset();
 
-            _mockSettingsContext = new Mock<SettingsFileContext>(config);
+            string _tempFilePath = Path.GetTempPath();
+            string _tempFileName = "tempsettings.json";
+
+            _mockConfig.Setup(x => x["SettingsFileName"]).Returns(_tempFileName);
+            _mockConfig.Setup(x => x["SettingsFilePath"]).Returns(_tempFilePath);
+
+            _mockSettingsContext = new Mock<SettingsFileContext>(_mockConfig.Object);
         }
 
         [Fact]
         public void GetSettings_ReturnsSettings()
         {
             // Arrange
+            NewSettingsMock();
+
             var settings = new Settings()
             {
                 TimeSlotDuration = "01:00:00",
@@ -94,6 +102,8 @@ namespace TRS_backend_test.ControllerTests.AdminPortal
         public async void SetSettings_SetsSettings()
         {
             // Arrange
+            NewSettingsMock();
+
             var settings = new Settings()
             {
                 TimeSlotDuration = "01:00:00",
