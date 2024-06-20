@@ -73,8 +73,10 @@ pipeline {
 					sh "newman run api-tests.json --reporters cli,junit --reporter-junit-export 'api-testing-junit-report.xml'"
 				}
 			}
-			success {
-				recordCoverage(tools: [[parser: 'JUNIT', pattern: '**/api-testing-junit-report.xml']])
+			post {
+				success {
+					recordCoverage(tools: [[parser: 'JUNIT', pattern: '**/api-testing-junit-report.xml']])
+				}
 			}
 		}
 		stage('Stop API Testing environment and Clean') {
