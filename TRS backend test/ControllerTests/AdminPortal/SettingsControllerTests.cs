@@ -17,34 +17,24 @@ namespace TRS_backend_test.ControllerTests.AdminPortal
     public class SettingsControllerTests
     {
         Mock<TRSDbContext> _mockDbContext;
-        Mock<SettingsFileContext> _mockSettingsContext;
-        Mock<IConfiguration> _mockConfig;
-        
 
         public SettingsControllerTests()
         {
             _mockDbContext = new Mock<TRSDbContext>();
-            NewSettingsMock();
-        }
-
-        private void NewSettingsMock() {
-            _mockConfig = new Mock<IConfiguration>();
-            _mockConfig.Reset();
-
-            string _tempFilePath = Path.GetTempPath();
-            string _tempFileName = "tempsettings.json";
-
-            _mockConfig.Setup(x => x["SettingsFileName"]).Returns(_tempFileName);
-            _mockConfig.Setup(x => x["SettingsFilePath"]).Returns(_tempFilePath);
-
-            _mockSettingsContext = new Mock<SettingsFileContext>(_mockConfig.Object);
         }
 
         [Fact]
         public void GetSettings_ReturnsSettings()
         {
             // Arrange
-            NewSettingsMock();
+            
+                // SettingsFileContext mock for each test as they run asyncronously and can affect each other
+            Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
+            string _tempFilePath = Path.GetTempPath();
+            string _tempFileName = "tempsettings.json";
+            _mockConfig.Setup(x => x["SettingsFileName"]).Returns(_tempFileName);
+            _mockConfig.Setup(x => x["SettingsFilePath"]).Returns(_tempFilePath);
+            Mock<SettingsFileContext> _mockSettingsContext = new Mock<SettingsFileContext>(_mockConfig.Object);
 
             var settings = new Settings()
             {
@@ -102,7 +92,14 @@ namespace TRS_backend_test.ControllerTests.AdminPortal
         public async void SetSettings_SetsSettings()
         {
             // Arrange
-            NewSettingsMock();
+
+                // SettingsFileContext mock for each test as they run asyncronously and can affect each other
+            Mock<IConfiguration> _mockConfig = new Mock<IConfiguration>();
+            string _tempFilePath = Path.GetTempPath();
+            string _tempFileName = "tempsettings.json";
+            _mockConfig.Setup(x => x["SettingsFileName"]).Returns(_tempFileName);
+            _mockConfig.Setup(x => x["SettingsFilePath"]).Returns(_tempFilePath);
+            Mock<SettingsFileContext> _mockSettingsContext = new Mock<SettingsFileContext>(_mockConfig.Object);
 
             var settings = new Settings()
             {
