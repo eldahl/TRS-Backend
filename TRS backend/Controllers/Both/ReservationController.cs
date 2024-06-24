@@ -99,8 +99,8 @@ namespace TRS_backend.Controllers.Both
                 }
             }
             // Phone number validator: Only allow 8 digit phone numbers for now
-            Regex phoneRegex = new Regex(@"\\d{8,}$");
-            if (requestBody.PhoneNumber is not null && phoneRegex.IsMatch(requestBody.PhoneNumber))
+            Regex phoneRegex = new Regex(@"\d{8,}$");
+            if (requestBody.PhoneNumber is not null && !phoneRegex.IsMatch(requestBody.PhoneNumber))
             {
                 return BadRequest("Phone number field is not recognized as an 8 digit phone number");
             }

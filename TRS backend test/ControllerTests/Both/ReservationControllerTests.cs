@@ -202,6 +202,84 @@ namespace TRS_backend_test.ControllerTests.Both
         }
 
         [Fact]
+        public async void ReserveTimeSlot_TableAlreadyReserved_ReturnsBadRequest()
+        {
+            // Arrange
+            int timeSlotId = 1;
+            int tableId1 = 1;
+            int tableId2 = 2;
+
+            var table1 = new TblTables
+            {
+                Id = tableId1,
+                TableName = "Table 1",
+                Seats = 4
+            };
+
+            _mockDbContext.Setup(m => m.Tables).ReturnsDbSet(new List<TblTables>() {
+                table1
+            });
+            _mockDbContext.Setup(m => m.OpenDays).ReturnsDbSet(new List<TblOpenDays>() {
+                new TblOpenDays {
+                    Id = 1,
+                    Date = DateOnly.FromDateTime(DateTime.Today),
+                    OpenTime = TimeOnly.FromDateTime(DateTime.Today),
+                    CloseTime = TimeOnly.FromDateTime(DateTime.Today.AddHours(8))
+                }
+            });
+            var timeslot = new TblTimeSlots
+            {
+                Id = timeSlotId,
+                Date = DateOnly.FromDateTime(DateTime.Today),
+                StartTime = TimeOnly.FromDateTime(DateTime.Today),
+                Duration = new TimeSpan(2, 0, 0)
+            };
+            _mockDbContext.Setup(m => m.TimeSlots).ReturnsDbSet(new List<TblTimeSlots>() {
+                timeslot
+            });
+            _mockDbContext.Setup(m => m.TableReservations).ReturnsDbSet(new List<TblTableReservations>() {
+                new TblTableReservations {
+                    TableId = tableId1,
+                    TimeSlotId = timeSlotId,
+                    OpenDayId = 1,
+                    Table = table1,
+                    TimeSlot = timeslot
+                },
+                new TblTableReservations {
+                    TableId = tableId2,
+                    TimeSlotId = timeSlotId,
+                    OpenDayId = 1,
+                    Table = table1,
+                    TimeSlot = timeslot
+                }
+            });
+
+            var requestBody = new DTOReserveRequest
+            {
+                TableId = tableId1,
+                TimeSlotId = timeSlotId,
+                FullName = "John Doe",
+                Email = "john@doe.com",
+                PhoneNumber = "1234567890",
+                SendReminders = true,
+                Comment = "Test comment"
+            };
+
+            var controller = new ReservationController(_mockDbContext.Object, _timeSlotService, _mockSettingsContext.Object);
+
+            // Act
+            var result = await controller.Reserve(requestBody);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Table is already reserved", (result.Result as BadRequestObjectResult).Value);
+
+            // Clean up
+            _mockDbContext.Reset();
+        }
+
+        [Fact]
         public async void ReserveTimeSlot_InvalidInput_TableIdIsLessThanZero_ReturnsBadRequest()
         {
             // Arrange
@@ -312,7 +390,7 @@ namespace TRS_backend_test.ControllerTests.Both
                 TableId = 1,
                 TimeSlotId = 1,
                 FullName = "John Doe",
-                Email = "",
+                Email = null!,
                 PhoneNumber = "1234567890a",
                 SendReminders = true,
                 Comment = "Test comment"
